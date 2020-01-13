@@ -96,19 +96,22 @@ def check_new_files(context):
     global before, path_to_watch
     job = context.job
     # simple poll for changes should be good enogh for this purpose 
-    #src: http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
+    # adapted from: http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
     after = dict ([(f, None) for f in os.listdir (path_to_watch)])
     added = [f for f in after if not f in before]
     removed = [f for f in before if not f in after]
     msg = ""
     if added: 
         msg = "Added: " + ", ".join (added)
+        for screenshot in added:
+            context.bot.send_photo(job.context, 
+                    photo=open(path_to_watch + "\\" + screenshot, 'rb'))
     if removed:
         msg += "\nRemoved: " + ", ".join (removed)
     if msg:
         msg = msg.strip()
         print(msg)
-        context.bot.send_message(job.context, text=msg)
+        #context.bot.send_message(job.context, text=msg)
     before = after
 
 
